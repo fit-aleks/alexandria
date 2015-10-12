@@ -5,7 +5,6 @@ package it.jaschke.alexandria.CameraPreview;
  *
  * Created by lisah0 on 2012-02-24
  */
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;

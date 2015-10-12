@@ -169,6 +169,7 @@ public class BookService extends IntentService {
             }
 
             JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
+            Log.d(LOG_TAG, bookInfo.toString());
 
             String title = bookInfo.getString(TITLE);
 
