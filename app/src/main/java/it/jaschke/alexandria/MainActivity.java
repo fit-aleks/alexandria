@@ -11,7 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +22,7 @@ import android.widget.Toast;
 import it.jaschke.alexandria.api.Callback;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -28,11 +30,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private NavigationDrawerFragment navigationDrawerFragment;
 
     /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     * Used to store the last screen title.
      */
     private CharSequence title;
     public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReciever;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
@@ -41,10 +44,24 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IS_TABLET = isTablet();
-        if(IS_TABLET){
+        if(IS_TABLET) {
             setContentView(R.layout.activity_main_tablet);
-        }else {
+        } else {
             setContentView(R.layout.activity_main);
+            final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            final ActionBar ab = getSupportActionBar();
+            ab.setDisplayShowTitleEnabled(true);
+
+            final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            mDrawerToggle = new ActionBarDrawerToggle(this,
+                    drawerLayout,
+                    toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close);
+            drawerLayout.setDrawerListener(mDrawerToggle);
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
         }
 
         messageReciever = new MessageReciever();
@@ -55,10 +72,24 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         title = getTitle();
 
+
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));
     }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -90,14 +121,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         title = getString(titleId);
     }
 
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(title);
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!navigationDrawerFragment.isDrawerOpen()) {
@@ -105,7 +128,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
+            getSupportActionBar().setTitle(title);
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -113,6 +136,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
