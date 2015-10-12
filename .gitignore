@@ -1,0 +1,34 @@
+#built application files
+*.apk
+*.ap_
+
+# Gradle
+.gradle/
+build/
+.gradletasknamecache
+
+# generated files
+bin/
+gen/
+out/
+gen-external-apklibs/
+
+#Mac OS
+.DS_Store
+
+# Local configuration file
+/local.properties
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+#IntelliJ IDEA 
+*.iml
+*.ipr
+*.iws
+.idea/**
+classes/**
+target/**
