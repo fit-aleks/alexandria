@@ -34,7 +34,7 @@ public class BookProvider extends ContentProvider {
 
     private static final SQLiteQueryBuilder bookFull;
 
-    static{
+    static {
         bookFull = new SQLiteQueryBuilder();
         bookFull.setTables(
                 AlexandriaContract.BookEntry.TABLE_NAME + " LEFT OUTER JOIN " +
@@ -70,7 +70,7 @@ public class BookProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (uriMatcher.match(uri)) {
             case BOOK:
@@ -78,7 +78,7 @@ public class BookProvider extends ContentProvider {
                         AlexandriaContract.BookEntry.TABLE_NAME,
                         projection,
                         selection,
-                        selection==null? null : selectionArgs,
+                        selection == null ? null : selectionArgs,
                         null,
                         null,
                         sortOrder

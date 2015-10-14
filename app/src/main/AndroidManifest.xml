@@ -42,7 +42,7 @@
 
         <provider
             android:name=".data.BookProvider"
-            android:authorities="it.jaschke.alexandria"
+            android:authorities="@string/content_authority"
             android:exported="false" />
         <service
             android:name=".services.BookService"

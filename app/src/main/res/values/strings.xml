@@ -38,4 +38,7 @@
     <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
 
+    <!-- Content Provider authority -->
+    <string name="content_authority" translatable="false">it.jaschke.alexandria</string>
+
 </resources>

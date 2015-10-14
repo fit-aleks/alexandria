@@ -1,10 +1,13 @@
 package it.jaschke.alexandria.services;
 
 import android.app.IntentService;
+import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -18,6 +21,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 import it.jaschke.alexandria.MainActivity;
 import it.jaschke.alexandria.R;
@@ -84,7 +90,7 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
-        if(bookEntry.getCount()>0){
+        if(bookEntry.getCount() > 0){
             bookEntry.close();
             return;
         }
@@ -188,47 +194,69 @@ public class BookService extends IntentService {
                 imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
             }
 
-            writeBackBook(ean, title, subtitle, desc, imgUrl);
+            ArrayList<ContentProviderOperation> cOList = new ArrayList<>();
+//            writeBackBook(ean, title, subtitle, desc, imgUrl);
+            cOList.add(ContentProviderOperation.newInsert(AlexandriaContract.BookEntry.CONTENT_URI)
+                    .withValues(writeBackBook(ean, title, subtitle, desc, imgUrl))
+                    .build());
+
 
             if(bookInfo.has(AUTHORS)) {
-                writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
+                cOList.addAll(writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS)));
+//                writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
             }
             if(bookInfo.has(CATEGORIES)){
-                writeBackCategories(ean,bookInfo.getJSONArray(CATEGORIES) );
+                cOList.addAll(writeBackCategories(ean, bookInfo.getJSONArray(CATEGORIES)));
             }
+            getContentResolver().applyBatch(getString(R.string.content_authority), cOList);
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Error ", e);
+        } catch (OperationApplicationException e) {
+            Log.e(LOG_TAG, "OperationApplicationException", e);
+        } catch (RemoteException e) {
+            Log.e(LOG_TAG, "RemoteException", e);
         }
     }
 
-    private void writeBackBook(String ean, String title, String subtitle, String desc, String imgUrl) {
+    private ContentValues writeBackBook(String ean, String title, String subtitle, String desc, String imgUrl) {
         ContentValues values= new ContentValues();
         values.put(AlexandriaContract.BookEntry._ID, ean);
         values.put(AlexandriaContract.BookEntry.TITLE, title);
         values.put(AlexandriaContract.BookEntry.IMAGE_URL, imgUrl);
         values.put(AlexandriaContract.BookEntry.SUBTITLE, subtitle);
         values.put(AlexandriaContract.BookEntry.DESC, desc);
-        getContentResolver().insert(AlexandriaContract.BookEntry.CONTENT_URI,values);
+        return values;
+//        getContentResolver().insert(AlexandriaContract.BookEntry.CONTENT_URI,values);
     }
 
-    private void writeBackAuthors(String ean, JSONArray jsonArray) throws JSONException {
-        ContentValues values= new ContentValues();
+    private List<ContentProviderOperation> writeBackAuthors(String ean, JSONArray jsonArray) throws JSONException {
+        List<ContentProviderOperation> resultVector = new ArrayList<>();
+
         for (int i = 0; i < jsonArray.length(); i++) {
+            ContentValues values= new ContentValues();
             values.put(AlexandriaContract.AuthorEntry._ID, ean);
             values.put(AlexandriaContract.AuthorEntry.AUTHOR, jsonArray.getString(i));
-            getContentResolver().insert(AlexandriaContract.AuthorEntry.CONTENT_URI, values);
-            values= new ContentValues();
+            resultVector.add(ContentProviderOperation.newInsert(AlexandriaContract.AuthorEntry.CONTENT_URI)
+                    .withValues(values).build());
+//            getContentResolver().insert(AlexandriaContract.AuthorEntry.CONTENT_URI, values);
+//            values= new ContentValues();
         }
+        return resultVector;
     }
 
-    private void writeBackCategories(String ean, JSONArray jsonArray) throws JSONException {
-        ContentValues values= new ContentValues();
+    private List<ContentProviderOperation> writeBackCategories(String ean, JSONArray jsonArray) throws JSONException {
+        List<ContentProviderOperation> resultVector = new ArrayList<>();
+
         for (int i = 0; i < jsonArray.length(); i++) {
+            ContentValues values= new ContentValues();
             values.put(AlexandriaContract.CategoryEntry._ID, ean);
             values.put(AlexandriaContract.CategoryEntry.CATEGORY, jsonArray.getString(i));
-            getContentResolver().insert(AlexandriaContract.CategoryEntry.CONTENT_URI, values);
-            values= new ContentValues();
+            resultVector.add(ContentProviderOperation.newInsert(AlexandriaContract.CategoryEntry.CONTENT_URI)
+                    .withValues(values).build());
+//            getContentResolver().insert(AlexandriaContract.CategoryEntry.CONTENT_URI, values);
+//            values= new ContentValues();
         }
+        return resultVector;
     }
  }
