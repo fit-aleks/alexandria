@@ -184,6 +184,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     .into(mBookCoverImageView);
 //            new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
 //            rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
+        } else {
+            mBookCoverImageView.setVisibility(View.INVISIBLE);
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
