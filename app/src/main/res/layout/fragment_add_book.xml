@@ -48,7 +48,8 @@
             android:paddingRight="20dp"
             android:layout_below="@+id/eancontainer"
             android:layout_alignLeft="@+id/eancontainer"
-            android:layout_alignStart="@+id/eancontainer"/>
+            android:layout_alignStart="@+id/eancontainer"
+            tools:text="Some long book title"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -59,19 +60,19 @@
             android:maxLines="3"
             android:ellipsize="end"
             android:layout_alignLeft="@+id/eancontainer"
-            />
+            tools:text="Book can also have some subtitle. Rather long"/>
 
         <TextView
+            android:id="@+id/authors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/authors"
             android:gravity="end"
             android:textSize="@dimen/small_fontsize"
             android:layout_marginTop="20dp"
             android:layout_below="@+id/bookSubTitle"
             android:layout_alignRight="@+id/eancontainer"
             android:layout_alignEnd="@+id/eancontainer"
-            />
+            tools:text="List of authors"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -83,9 +84,9 @@
             android:layout_alignStart="@+id/eancontainer"/>
 
         <TextView
+            android:id="@+id/categories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/categories"
             android:textSize="@dimen/small_fontsize"
             android:layout_below="@+id/bookCover"
             android:layout_marginTop="20dp"
@@ -120,8 +121,7 @@
                 android:id="@+id/save_button"
                 android:drawableLeft="@drawable/ic_action_accept"
                 style="?android:attr/buttonBarButtonStyle"
-                android:layout_gravity="bottom"
-                />
+                android:layout_gravity="bottom"/>
 
         </LinearLayout>
 
