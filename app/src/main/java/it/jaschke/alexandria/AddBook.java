@@ -182,8 +182,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             Glide.with(this)
                     .load(imgUrl)
                     .into(mBookCoverImageView);
-//            new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
-//            rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
         } else {
             mBookCoverImageView.setVisibility(View.INVISIBLE);
         }
@@ -218,7 +216,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SCANNER_TAG) {
+        if (data != null && requestCode == SCANNER_TAG) {
             Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
             this.ean.setText(barcode.displayValue);
         }

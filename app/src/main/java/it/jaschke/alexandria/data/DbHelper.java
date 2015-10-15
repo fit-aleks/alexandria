@@ -30,7 +30,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_AUTHOR_TABLE = "CREATE TABLE " + AlexandriaContract.AuthorEntry.TABLE_NAME + " ("+
                 AlexandriaContract.AuthorEntry._ID + " INTEGER," +
-                AlexandriaContract.AuthorEntry.AUTHOR + " TEXT," +
+                AlexandriaContract.AuthorEntry.AUTHOR + " TEXT NOT NULL DEFAULT ''," +
                 " FOREIGN KEY (" + AlexandriaContract.AuthorEntry._ID + ") REFERENCES " +
                 AlexandriaContract.BookEntry.TABLE_NAME + " (" + AlexandriaContract.BookEntry._ID + "))";
 

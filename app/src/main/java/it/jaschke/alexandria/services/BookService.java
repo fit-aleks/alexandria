@@ -90,7 +90,7 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
-        if(bookEntry.getCount() > 0){
+        if(bookEntry.getCount() > 0) {
             bookEntry.close();
             return;
         }
@@ -103,18 +103,18 @@ public class BookService extends IntentService {
 
         try {
             final String FORECAST_BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
-            final String QUERY_PARAM = "q";
-
-            final String ISBN_PARAM = "isbn:" + ean;
+            final String PARAM_QUERY = "q";
+            final String PARAM_ISBN = "isbn:" + ean;
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, ISBN_PARAM)
+                    .appendQueryParameter(PARAM_QUERY, PARAM_ISBN)
                     .build();
 
             URL url = new URL(builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
+            urlConnection.setConnectTimeout(15000);
             urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
@@ -150,6 +150,20 @@ public class BookService extends IntentService {
 
         }
 
+
+
+        try {
+            getBookDataFromJson(bookJsonString, ean);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Error ", e);
+        } catch (OperationApplicationException e) {
+            Log.e(LOG_TAG, "OperationApplicationException", e);
+        } catch (RemoteException e) {
+            Log.e(LOG_TAG, "RemoteException", e);
+        }
+    }
+
+    private void getBookDataFromJson(final String bookJsonString, final String ean) throws JSONException, OperationApplicationException, RemoteException {
         final String ITEMS = "items";
 
         final String VOLUME_INFO = "volumeInfo";
@@ -162,61 +176,50 @@ public class BookService extends IntentService {
         final String IMG_URL_PATH = "imageLinks";
         final String IMG_URL = "thumbnail";
 
-        try {
-            JSONObject bookJson = new JSONObject(bookJsonString);
-            JSONArray bookArray;
-            if(bookJson.has(ITEMS)){
-                bookArray = bookJson.getJSONArray(ITEMS);
-            }else{
-                Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
-                messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
-                return;
-            }
-
-            JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
-            Log.d(LOG_TAG, bookInfo.toString());
-
-            String title = bookInfo.getString(TITLE);
-
-            String subtitle = "";
-            if(bookInfo.has(SUBTITLE)) {
-                subtitle = bookInfo.getString(SUBTITLE);
-            }
-
-            String desc="";
-            if(bookInfo.has(DESC)){
-                desc = bookInfo.getString(DESC);
-            }
-
-            String imgUrl = "";
-            if(bookInfo.has(IMG_URL_PATH) && bookInfo.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
-                imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
-            }
-
-            ArrayList<ContentProviderOperation> cOList = new ArrayList<>();
-//            writeBackBook(ean, title, subtitle, desc, imgUrl);
-            cOList.add(ContentProviderOperation.newInsert(AlexandriaContract.BookEntry.CONTENT_URI)
-                    .withValues(writeBackBook(ean, title, subtitle, desc, imgUrl))
-                    .build());
-
-
-            if(bookInfo.has(AUTHORS)) {
-                cOList.addAll(writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS)));
-//                writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
-            }
-            if(bookInfo.has(CATEGORIES)){
-                cOList.addAll(writeBackCategories(ean, bookInfo.getJSONArray(CATEGORIES)));
-            }
-            getContentResolver().applyBatch(getString(R.string.content_authority), cOList);
-
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "Error ", e);
-        } catch (OperationApplicationException e) {
-            Log.e(LOG_TAG, "OperationApplicationException", e);
-        } catch (RemoteException e) {
-            Log.e(LOG_TAG, "RemoteException", e);
+        JSONObject bookJson = new JSONObject(bookJsonString);
+        JSONArray bookArray;
+        if(bookJson.has(ITEMS)){
+            bookArray = bookJson.getJSONArray(ITEMS);
+        }else{
+            Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
+            messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.not_found));
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
+            return;
         }
+
+        JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
+        Log.d(LOG_TAG, bookInfo.toString());
+
+        String title = bookInfo.getString(TITLE);
+
+        String subtitle = "";
+        if(bookInfo.has(SUBTITLE)) {
+            subtitle = bookInfo.getString(SUBTITLE);
+        }
+
+        String desc="";
+        if(bookInfo.has(DESC)){
+            desc = bookInfo.getString(DESC);
+        }
+
+        String imgUrl = "";
+        if(bookInfo.has(IMG_URL_PATH) && bookInfo.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
+            imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
+        }
+
+        ArrayList<ContentProviderOperation> cOList = new ArrayList<>();
+        cOList.add(ContentProviderOperation.newInsert(AlexandriaContract.BookEntry.CONTENT_URI)
+                .withValues(writeBackBook(ean, title, subtitle, desc, imgUrl))
+                .build());
+
+
+        if(bookInfo.has(AUTHORS)) {
+            cOList.addAll(writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS)));
+        }
+        if(bookInfo.has(CATEGORIES)){
+            cOList.addAll(writeBackCategories(ean, bookInfo.getJSONArray(CATEGORIES)));
+        }
+        getContentResolver().applyBatch(getString(R.string.content_authority), cOList);
     }
 
     private ContentValues writeBackBook(String ean, String title, String subtitle, String desc, String imgUrl) {
@@ -227,7 +230,6 @@ public class BookService extends IntentService {
         values.put(AlexandriaContract.BookEntry.SUBTITLE, subtitle);
         values.put(AlexandriaContract.BookEntry.DESC, desc);
         return values;
-//        getContentResolver().insert(AlexandriaContract.BookEntry.CONTENT_URI,values);
     }
 
     private List<ContentProviderOperation> writeBackAuthors(String ean, JSONArray jsonArray) throws JSONException {
@@ -239,8 +241,6 @@ public class BookService extends IntentService {
             values.put(AlexandriaContract.AuthorEntry.AUTHOR, jsonArray.getString(i));
             resultVector.add(ContentProviderOperation.newInsert(AlexandriaContract.AuthorEntry.CONTENT_URI)
                     .withValues(values).build());
-//            getContentResolver().insert(AlexandriaContract.AuthorEntry.CONTENT_URI, values);
-//            values= new ContentValues();
         }
         return resultVector;
     }
@@ -254,8 +254,6 @@ public class BookService extends IntentService {
             values.put(AlexandriaContract.CategoryEntry.CATEGORY, jsonArray.getString(i));
             resultVector.add(ContentProviderOperation.newInsert(AlexandriaContract.CategoryEntry.CONTENT_URI)
                     .withValues(values).build());
-//            getContentResolver().insert(AlexandriaContract.CategoryEntry.CONTENT_URI, values);
-//            values= new ContentValues();
         }
         return resultVector;
     }
