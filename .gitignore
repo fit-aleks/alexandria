@@ -18,6 +18,7 @@ gen-external-apklibs/
 
 # Local configuration file
 /local.properties
+alexandria/local.properties
 
 # files for the dex VM
 *.dex
@@ -29,6 +30,7 @@ gen-external-apklibs/
 *.iml
 *.ipr
 *.iws
+.idea/
 .idea/**
 classes/**
 target/**
