@@ -33,10 +33,6 @@ public class MainActivity extends AppCompatActivity {
                     .findFragmentById(R.id.fragment_pager);
         }
 
-//        final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayShowTitleEnabled(true);
-
         FootballScoreSyncAdapter.initializeSyncAdapter(this);
     }
 
