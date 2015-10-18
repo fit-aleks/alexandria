@@ -76,5 +76,7 @@
     <color name="red13">#FFCACA</color>
     <color name="red14">#FFE4E4</color>
 
-
+    <color name="primary">#4CAF50</color> <!-- 500 green -->
+    <color name="primary_dark">#388E3C</color> <!-- 700 green -->
+    <color name="accent">@android:color/white</color>
 </resources>
