@@ -16,26 +16,27 @@ public class MainActivity extends AppCompatActivity {
 
     public static int selected_match_id;
     public static int current_fragment = 2;
-
-    private PagerFragment mainPagerFragment;
+    PagerFragment mainPagerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(LOG_TAG, "Reached MainActivity onCreate");
-        final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        if (savedInstanceState == null) {
+            mainPagerFragment = new PagerFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, mainPagerFragment)
+                    .commit();
+        } else {
+            mainPagerFragment = (PagerFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment_pager);
+        }
 
-//        if (savedInstanceState == null) {
-//            mainPagerFragment = new PagerFragment();
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.container, mainPagerFragment)
-//                    .commit();
-//        }
-        mainPagerFragment = (PagerFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_pager);
+//        final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
         FootballScoreSyncAdapter.initializeSyncAdapter(this);
     }
 
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         Log.v(SAVE_TAG, "will save");
@@ -86,5 +87,6 @@ public class MainActivity extends AppCompatActivity {
         mainPagerFragment = (PagerFragment) getSupportFragmentManager().getFragment(savedInstanceState, "mainPagerFragment");
         super.onRestoreInstanceState(savedInstanceState);
     }
-    */
+
+
 }

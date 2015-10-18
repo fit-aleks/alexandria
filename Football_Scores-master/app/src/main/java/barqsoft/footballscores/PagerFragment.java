@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.format.Time;
@@ -23,12 +24,12 @@ import java.util.List;
  */
 public class PagerFragment extends Fragment {
     private static final int NUM_PAGES = 5;
-    private MainScreenFragment[] viewFragments = new MainScreenFragment[5];
+    public ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
-        final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.pager);
+        viewPager = (ViewPager) rootView.findViewById(R.id.pager);
         if (viewPager != null) {
             setupViewPager(viewPager);
         }
@@ -42,16 +43,13 @@ public class PagerFragment extends Fragment {
         final MyPageAdapter mPagerAdapter = new MyPageAdapter(getChildFragmentManager());
         for (int i = 0; i < NUM_PAGES; i++) {
             final Date fragmentDate = new Date(System.currentTimeMillis() + ((i - 2) * 86400000));
-
-            mPagerAdapter.addFragment(new MainScreenFragment(), fragmentDate);
-//            viewFragments[i] = new MainScreenFragment();
-//            viewFragments[i].setFragmentDate(mformat.format(fragmentDate));
+            mPagerAdapter.addFragmentWithDate(fragmentDate);
         }
         viewPager.setAdapter(mPagerAdapter);
         viewPager.setCurrentItem(MainActivity.current_fragment);
     }
 
-    private class MyPageAdapter extends FragmentStatePagerAdapter {
+    private class MyPageAdapter extends FragmentPagerAdapter {
         private final ArrayList<MainScreenFragment> viewFragments = new ArrayList<>(NUM_PAGES);
         private final List<String> pageTitles = new ArrayList<>();
 
@@ -60,11 +58,10 @@ public class PagerFragment extends Fragment {
             return viewFragments.get(i);
         }
 
-        public void addFragment(MainScreenFragment fragment, Date date) {
-            viewFragments.add(fragment);
+        public void addFragmentWithDate(Date date) {
             pageTitles.add(getDayName(getActivity(), date.getTime()));
             final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            fragment.setFragmentDate(format.format(date));
+            viewFragments.add(MainScreenFragment.newInstance(format.format(date)));
         }
 
         @Override
@@ -85,7 +82,6 @@ public class PagerFragment extends Fragment {
         public String getDayName(Context context, long dateInMillis) {
             // If the date is today, return the localized version of "Today" instead of the actual
             // day name.
-
             Time t = new Time();
             t.setToNow();
             int julianDay = Time.getJulianDay(dateInMillis, t.gmtoff);
