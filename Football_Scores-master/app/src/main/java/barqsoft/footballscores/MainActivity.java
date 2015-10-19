@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static int selected_match_id;
     public static int current_fragment = 2;
-    PagerFragment mainPagerFragment;
+    private PagerFragment mainPagerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
             Intent start_about = new Intent(this, AboutActivity.class);
             startActivity(start_about);
             return true;
+        } else if (id == R.id.action_refresh) {
+            FootballScoreSyncAdapter.syncImmediately(this);
         }
 
         return super.onOptionsItemSelected(item);

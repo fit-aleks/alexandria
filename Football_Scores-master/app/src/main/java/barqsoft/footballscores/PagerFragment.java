@@ -41,7 +41,7 @@ public class PagerFragment extends Fragment {
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
         return rootView;
-        
+
     }
 
     private void setupViewPager(final ViewPager viewPager) {

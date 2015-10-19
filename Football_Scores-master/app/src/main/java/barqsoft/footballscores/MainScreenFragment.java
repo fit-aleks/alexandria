@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import android.widget.ListView;
 
 import barqsoft.footballscores.data.DatabaseContract;
 import barqsoft.footballscores.service.MyFetchService;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -26,6 +30,9 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     public static final int SCORES_LOADER = 0;
     private String[] fragmentdate = new String[1];
     private int last_selected_item = -1;
+
+    @Bind(R.id.scores_list)
+    RecyclerView mScoresList;
 
     public MainScreenFragment() {
     }
@@ -55,12 +62,20 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         if (args != null) {
             fragmentdate = new String[]{args.getString(KEY_DATE)};
         }
-//        updateScores();
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final ListView scoreList = (ListView) rootView.findViewById(R.id.scores_list);
-        mAdapter = new ScoresAdapter(getActivity(), null, 0);
-        scoreList.setAdapter(mAdapter);
+        ButterKnife.bind(this, rootView);
+        mScoresList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new ScoresAdapter(getActivity(), new ScoresAdapter.ScoreAdapterOnClickHandler() {
+            @Override
+            public void onClick(final double matchId) {
+                mAdapter.detail_match_id = matchId;
+                MainActivity.selected_match_id = (int) matchId;
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        mScoresList.setAdapter(mAdapter);
         mAdapter.detail_match_id = MainActivity.selected_match_id;
+        /*
         scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -70,6 +85,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                 mAdapter.notifyDataSetChanged();
             }
         });
+        */
         return rootView;
     }
 
@@ -83,6 +99,12 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     public void onResume() {
         super.onResume();
 //        getLoaderManager().restartLoader(SCORES_LOADER, null, this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override
