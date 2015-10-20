@@ -8,5 +8,7 @@
     <dimen name="score_text">30sp</dimen>
     <dimen name="league_text">15sp</dimen>
 
+    <dimen name="detail_view_padding_vertical">8dp</dimen>
+
     <dimen name="detail_card_elevation">6dp</dimen>
 </resources>

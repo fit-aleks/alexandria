@@ -80,7 +80,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
             match_day.setText(Utilies.getMatchDay(mCursor.getInt(COL_MATCHDAY),
                     mCursor.getInt(COL_LEAGUE)));
             TextView league = (TextView) v.findViewById(R.id.league_textview);
-            league.setText(Utilies.getLeague(mCursor.getInt(COL_LEAGUE)));
+            league.setText(Utilies.getLeague(mContext, mCursor.getInt(COL_LEAGUE)));
             Button share_button = (Button) v.findViewById(R.id.share_button);
             share_button.setOnClickListener(new View.OnClickListener() {
                 @Override

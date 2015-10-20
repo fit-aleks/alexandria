@@ -8,11 +8,13 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="champions_league">UEFA Champions League</string>
+
+    <!--<string name="champions_league">UEFA Champions League</string>
     <string name="bundesliga">Bundesliga</string>
     <string name="premierleague">Premier League</string>
     <string name="primeradivison">Primera Division</string>
-    <string name="seriaa">Serie A</string>
+    <string name="seriaa">Serie A</string>-->
+
     <string name="matchday_text">Match day</string>
     <string name="group_stage_text">Group stages</string>
     <string name="first_knockout_round">First knockout round</string>
@@ -38,4 +40,14 @@
 
     <string name="sync_account_type">footballscores.barqsoft</string>
     <string name="content_authority">barqsoft.footballscores</string>
+
+
+    <!-- Leagues titles -->
+    <string name="league_seria_a">Seria A</string>
+    <string name="league_premier">Premier League</string>
+    <string name="league_champions">UEFA Champions League</string>
+    <string name="league_primera_division">Primera Division</string>
+    <string name="league_bundesliga">Bundesliga</string>
+    <string name="league_unknown">Not known League Please report</string>
+
 </resources>
