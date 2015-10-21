@@ -11,4 +11,11 @@
     <dimen name="detail_view_padding_vertical">8dp</dimen>
 
     <dimen name="detail_card_elevation">6dp</dimen>
+
+    <!-- Nearest Game Widget -->
+    <dimen name="widget_nearest_default_width">110dp</dimen>
+    <dimen name="widget_nearest_default_height">40dp</dimen>
+    <dimen name="widget_nearest_min_resize_width">80dp</dimen>
+    <dimen name="widget_nearest_min_resize_height">@dimen/widget_nearest_default_height</dimen>
+    <dimen name="widget_nearest_large_width">220dp</dimen>
 </resources>

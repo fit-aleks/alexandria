@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
@@ -37,12 +38,12 @@ import barqsoft.footballscores.data.DatabaseContract;
  */
 public class FootballScoreSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String LOG_TAG = FootballScoreSyncAdapter.class.getSimpleName();
-    // Interval at which to sync with the weather, in milliseconds.
+    // Interval at which to sync, in milliseconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
 
-
+    public static final String ACTION_DATA_UPDATED = "barqsoft.footballscores.ACTION_DATA_UPDATED";
     private Context mContext;
 
     public FootballScoreSyncAdapter(Context context, boolean autoInitialize) {
@@ -52,7 +53,8 @@ public class FootballScoreSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        getData("n2");
+        // n3 because we want to get data not only for tomorrow, but for the day after tomorrow too
+        getData("n3");
         getData("p2");
     }
 
@@ -68,7 +70,7 @@ public class FootballScoreSyncAdapter extends AbstractThreadedSyncAdapter {
         //Log.v(LOG_TAG, "The url we are looking at is: "+fetch_build.toString()); //log spam
         HttpURLConnection m_connection = null;
         BufferedReader reader = null;
-        String JSON_data = null;
+        String jsonData = null;
         //Opening Connection
         try {
             URL fetch = new URL(fetch_build.toString());
@@ -97,7 +99,7 @@ public class FootballScoreSyncAdapter extends AbstractThreadedSyncAdapter {
                 // Stream was empty.  No point in parsing.
                 return;
             }
-            JSON_data = buffer.toString();
+            jsonData = buffer.toString();
         } catch (Exception e) {
             Log.e(LOG_TAG, "Exception here" + e.getMessage());
         } finally {
@@ -113,18 +115,9 @@ public class FootballScoreSyncAdapter extends AbstractThreadedSyncAdapter {
             }
         }
         try {
-            if (JSON_data != null) {
-                //This bit is to check if the data contains any matches. If not, we call processJson on the dummy data
-                JSONArray matches = new JSONObject(JSON_data).getJSONArray("fixtures");
-                if (matches.length() == 0) {
-                    //if there is no data, call the function on dummy data
-                    //this is expected behavior during the off season.
-                    processJSONdata(getContext().getString(R.string.dummy_data), false);
-                    return;
-                }
-
-
-                processJSONdata(JSON_data, true);
+            if (jsonData != null) {
+                // Since we have a valid api key there will always be something.
+                processJSONdata(jsonData, true);
             } else {
                 //Could not Connect
                 Log.d(LOG_TAG, "Could not connect to server.");
@@ -265,17 +258,29 @@ public class FootballScoreSyncAdapter extends AbstractThreadedSyncAdapter {
                     values.add(match_values);
                 }
             }
-            int inserted_data = 0;
-            ContentValues[] insert_data = new ContentValues[values.size()];
-            values.toArray(insert_data);
-            inserted_data = getContext().getContentResolver().bulkInsert(
-                    DatabaseContract.BASE_CONTENT_URI, insert_data);
+
+            if (values.size() > 0) {
+                ContentValues[] insert_data = new ContentValues[values.size()];
+                values.toArray(insert_data);
+                getContext().getContentResolver().bulkInsert(
+                        DatabaseContract.BASE_CONTENT_URI, insert_data);
+                updateWidgets();
+            }
+
 
             //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
 
+    }
+
+    private void updateWidgets() {
+        Context context = getContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
 

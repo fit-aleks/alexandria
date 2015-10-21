@@ -56,10 +56,19 @@
                 android:resource="@xml/syncadapter"/>
         </service>
 
+        <!-- Nearest Widget -->
+        <receiver
+            android:name=".widget.NearestGameWidgetProvider"
+            android:label="@string/title_widget_today" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="barqsoft.footballscores.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_nearest" />
+        </receiver>
+        <service android:name=".widget.NearestGameWidgetIntentService" />
 
-
-
-        <service android:name=".service.MyFetchService" />
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package barqsoft.footballscores;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,11 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import barqsoft.footballscores.data.DatabaseContract;
-import barqsoft.footballscores.service.MyFetchService;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -68,19 +64,19 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         mAdapter = new ScoresAdapter(getActivity(), new ScoresAdapter.ScoreAdapterOnClickHandler() {
             @Override
             public void onClick(final double matchId) {
-                mAdapter.detail_match_id = matchId;
+                mAdapter.mDetailMatchId = matchId;
                 MainActivity.selected_match_id = (int) matchId;
                 mAdapter.notifyDataSetChanged();
             }
         });
         mScoresList.setAdapter(mAdapter);
-        mAdapter.detail_match_id = MainActivity.selected_match_id;
+        mAdapter.mDetailMatchId = MainActivity.selected_match_id;
         /*
         scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ViewHolder selected = (ViewHolder) view.getTag();
-                mAdapter.detail_match_id = selected.match_id;
+                mAdapter.mDetailMatchId = selected.match_id;
                 MainActivity.selected_match_id = (int) selected.match_id;
                 mAdapter.notifyDataSetChanged();
             }

@@ -31,7 +31,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     public static final int COL_MATCHDAY = 9;
     public static final int COL_ID = 8;
     public static final int COL_MATCHTIME = 2;
-    public double detail_match_id = 0;
+    public double mDetailMatchId = 0;
     private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
     private final ScoreAdapterOnClickHandler mClickHandler;
 
@@ -56,28 +56,28 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     @Override
     public void onBindViewHolder(final ScoreViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        holder.home_name.setText(mCursor.getString(COL_HOME));
-        holder.away_name.setText(mCursor.getString(COL_AWAY));
+        final String homeName = mCursor.getString(COL_HOME);
+        holder.home_name.setText(homeName);
+        final String awayName = mCursor.getString(COL_AWAY);
+        holder.away_name.setText(awayName);
         holder.date.setText(mCursor.getString(COL_MATCHTIME));
         holder.score.setText(Utilies.getScores(mCursor.getInt(COL_HOME_GOALS), mCursor.getInt(COL_AWAY_GOALS)));
         holder.matchId = mCursor.getDouble(COL_ID);
-        holder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(
-                mCursor.getString(COL_HOME)));
-        holder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(
-                mCursor.getString(COL_AWAY)
-        ));
+        holder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(homeName));
+        holder.home_crest.setContentDescription(homeName);
+        holder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(awayName));
+        holder.away_crest.setContentDescription(awayName);
 
-        LayoutInflater vi = (LayoutInflater) mContext.getApplicationContext()
+        final LayoutInflater vi = (LayoutInflater) mContext.getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.detail_fragment, null);
 
-        if (holder.matchId == detail_match_id) {
+        if (holder.matchId == mDetailMatchId) {
             //Log.v(FetchScoreTask.LOG_TAG,"will insert extraView");
-
             holder.container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                     , ViewGroup.LayoutParams.MATCH_PARENT));
             TextView match_day = (TextView) v.findViewById(R.id.matchday_textview);
-            match_day.setText(Utilies.getMatchDay(mCursor.getInt(COL_MATCHDAY),
+            match_day.setText(Utilies.getMatchDay(mContext, mCursor.getInt(COL_MATCHDAY),
                     mCursor.getInt(COL_LEAGUE)));
             TextView league = (TextView) v.findViewById(R.id.league_textview);
             league.setText(Utilies.getLeague(mContext, mCursor.getInt(COL_LEAGUE)));
@@ -86,8 +86,11 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
                 @Override
                 public void onClick(View v) {
                     //add Share Action
-                    mContext.startActivity(createShareForecastIntent(holder.home_name.getText() + " "
-                            + holder.score.getText() + " " + holder.away_name.getText() + " "));
+                    mContext.startActivity(createShareForecastIntent(
+                            holder.home_name.getText() + " "
+                            + holder.score.getText() + " "
+                            + holder.away_name.getText() + " "
+                    ));
                 }
             });
         } else {
@@ -131,11 +134,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
 
         @Override
         public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
-//            mCursor.moveToPosition(adapterPosition);
-//            int dateColumnIndex = mCursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATETEXT);
             mClickHandler.onClick(matchId);
-//            mICM.onClick(this);
         }
     }
 
