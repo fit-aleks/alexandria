@@ -22,10 +22,9 @@ import com.bumptech.glide.Glide;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 
 
-public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FragmentBookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EAN_KEY = "EAN";
     private final int LOADER_ID = 10;
@@ -36,7 +35,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     private TextView mAuthorsTextView;
 
-    public BookDetail(){
+    public FragmentBookDetail(){
     }
 
     @Override
@@ -51,7 +50,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            ean = arguments.getString(BookDetail.EAN_KEY);
+            ean = arguments.getString(FragmentBookDetail.EAN_KEY);
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
 
@@ -133,9 +132,9 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
 
-        if(rootView.findViewById(R.id.right_container)!=null){
-            rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
-        }
+//        if(rootView.findViewById(R.id.right_container)!=null){
+//            rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
+//        }
 
     }
 

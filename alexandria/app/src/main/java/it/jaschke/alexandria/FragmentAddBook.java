@@ -26,8 +26,8 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 
 
-public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
+public class FragmentAddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String LOG_TAG = FragmentAddBook.class.getSimpleName();
     private static final int SCANNER_TAG = 42;
     private EditText ean;
     private final int LOADER_ID = 1;
@@ -42,7 +42,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
 
-    public AddBook(){
+    public FragmentAddBook(){
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     bookIntent.putExtra(BookService.EAN, ean);
                     bookIntent.setAction(BookService.FETCH_BOOK);
                     getActivity().startService(bookIntent);
-                    AddBook.this.restartLoader();
+                    FragmentAddBook.this.restartLoader();
                 } else {
                     Toast.makeText(getContext(), R.string.error_no_internet, Toast.LENGTH_SHORT).show();
                 }
@@ -166,7 +166,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        Log.d("AddBook|onLoadFinished", "bookTitle=" + bookTitle + " authors = " + authors);
+        Log.d(LOG_TAG, "bookTitle=" + bookTitle + " authors = " + authors);
         // sometimes it is possible that book does not have an author.
         // for example - https://books.google.ru/books/about/A_kutya.html?hl=ru&id=euxGpwAACAAJ
         if (authors != null) {

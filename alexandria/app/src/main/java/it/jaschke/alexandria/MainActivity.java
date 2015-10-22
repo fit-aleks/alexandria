@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 nextFragment = new ListOfBooks();
                 break;
             case 1:
-                nextFragment = new AddBook();
+                nextFragment = new FragmentAddBook();
                 break;
             case 2:
-                nextFragment = new About();
+                nextFragment = new FragmentAbout();
                 break;
 
         }
@@ -155,9 +155,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     @Override
     public void onItemSelected(String ean) {
         Bundle args = new Bundle();
-        args.putString(BookDetail.EAN_KEY, ean);
+        args.putString(FragmentBookDetail.EAN_KEY, ean);
 
-        BookDetail fragment = new BookDetail();
+        FragmentBookDetail fragment = new FragmentBookDetail();
         fragment.setArguments(args);
 
         int id = R.id.container;
