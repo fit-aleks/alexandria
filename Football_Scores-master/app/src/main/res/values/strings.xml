@@ -54,6 +54,6 @@
     <!-- Strings related to Widgets -->
     <string name="title_widget_today">Nearest match</string>
     <string name="title_widget">All today\'s match</string>
-    <string name="widget_no_matches_today">Sorry.\nNo matches today :(</string>
+    <string name="empty_matches_list">No matches today</string>
 
 </resources>

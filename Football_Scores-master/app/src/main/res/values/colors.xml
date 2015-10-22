@@ -79,4 +79,6 @@
     <color name="primary">#4CAF50</color> <!-- 500 green -->
     <color name="primary_dark">#388E3C</color> <!-- 700 green -->
     <color name="accent">@android:color/white</color>
+
+    <color name="light_grey">#e0e0e0</color> <!-- 300 grey -->
 </resources>

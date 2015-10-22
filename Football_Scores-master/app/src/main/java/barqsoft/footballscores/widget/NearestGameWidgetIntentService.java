@@ -89,10 +89,9 @@ public class NearestGameWidgetIntentService extends IntentService {
             views.setTextViewText(R.id.score_textview, Utilies.getScores(homeGoals, awayGoals));
 
             // Create an Intent to launch MainActivity
-            // TODO
-//            Intent launchIntent = new Intent(this, MainActivity.class);
-//            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
-//            views.setOnClickPendingIntent(R.id., pendingIntent);
+            Intent launchIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -106,6 +105,11 @@ public class NearestGameWidgetIntentService extends IntentService {
             views.setViewVisibility(R.id.away_crest, View.GONE);
             views.setViewVisibility(R.id.score_textview, View.GONE);
             views.setViewVisibility(R.id.widget_no_data_textview, View.VISIBLE);
+
+            Intent launchIntent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
+
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }
