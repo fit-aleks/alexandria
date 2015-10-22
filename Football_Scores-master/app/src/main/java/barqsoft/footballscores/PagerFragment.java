@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by yehya khaled on 2/27/2015.
  */
@@ -28,14 +30,17 @@ public class PagerFragment extends Fragment {
     private static final int NUM_PAGES = 5;
     public ViewPager viewPager;
 
+    @Bind(R.id.tabs) TabLayout tabLayout;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
+        ButterKnife.bind(this, rootView);
         viewPager = (ViewPager) rootView.findViewById(R.id.pager);
         if (viewPager != null) {
             setupViewPager(viewPager);
         }
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         final Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
@@ -51,7 +56,13 @@ public class PagerFragment extends Fragment {
             mPagerAdapter.addFragmentWithDate(fragmentDate);
         }
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.setCurrentItem(MainActivity.current_fragment);
+        viewPager.setCurrentItem(MainActivity.currentFragment);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private class MyPageAdapter extends FragmentPagerAdapter {

@@ -39,7 +39,7 @@
             android:fontFamily="sans-serif-condensed"
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@android:color/black"
-            android:text="@string/empty_matches_list"/>
+            android:text="@string/empty_matches_list_today"/>
     </FrameLayout>
 
 </LinearLayout>

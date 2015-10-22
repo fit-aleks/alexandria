@@ -50,7 +50,7 @@
             android:layout_centerVertical="true"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="@string/empty_matches_list"
+            android:text="@string/empty_matches_list_today"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="@android:color/black" />
 

@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewHolder> {
 
     private Cursor mCursor;
+    private final View mEmptyView;
     private final Context mContext;
 
     public static final int COL_HOME = 3;
@@ -35,11 +36,10 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
     private final ScoreAdapterOnClickHandler mClickHandler;
 
-    public ScoresAdapter(Context context, ScoreAdapterOnClickHandler clickHandler/*, int choiceMode*/) {
+    public ScoresAdapter(Context context, View emptyView, ScoreAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
-//        mICM = new ItemChoiceManager(this);
-//        mICM.setChoiceMode(choiceMode);
+        mEmptyView = emptyView;
     }
 
     @Override
@@ -73,7 +73,6 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
         View v = vi.inflate(R.layout.detail_fragment, null);
 
         if (holder.matchId == mDetailMatchId) {
-            //Log.v(FetchScoreTask.LOG_TAG,"will insert extraView");
             holder.container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                     , ViewGroup.LayoutParams.MATCH_PARENT));
             TextView match_day = (TextView) v.findViewById(R.id.matchday_textview);
@@ -106,6 +105,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     public void swapCursor(Cursor cursor) {
         this.mCursor = cursor;
         notifyDataSetChanged();
+        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public Intent createShareForecastIntent(String ShareText) {
