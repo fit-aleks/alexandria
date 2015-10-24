@@ -28,7 +28,7 @@
         To report any bugs,or suggestions do not hesitate to send a mail to y.k.ibnelwalid@gmail.com.
     </string>
     <string name="widget_text">This is a widget probably.</string>
-    <string name="api_key" translatable="false">enter_your_api_key_here</string>
+    <string name="api_key" translatable="false">2a1e236d864e46dcbfbcdf876b971d38</string>
 
     <string name="sync_account_type" translatable="false">footballscores.barqsoft</string>
     <string name="content_authority" translatable="false">barqsoft.footballscores</string>
@@ -46,5 +46,18 @@
     <string name="title_widget_today">Nearest match</string>
     <string name="title_widget">All today\'s matches</string>
     <string name="empty_matches_list_today">No matches for today</string>
+
+    <!-- Team names -->
+    <string name="team_arsenal_london_fc">Arsenal London FC</string>
+    <string name="team_manchester_united_fc">Manchester United FC</string>
+    <string name="team_swansea_city">Swansea City</string>
+    <string name="team_leicester_city">Leicester City</string>
+    <string name="team_everton_fc">Everton FC</string>
+    <string name="team_west_ham_united_fc">West Ham United FC</string>
+    <string name="team_tottenham_hotspur_fc">Tottenham Hotspur FC</string>
+    <string name="team_west_bromwich_albion">West Bromwich Albion</string>
+    <string name="team_sunderland_afc">Sunderland AFC</string>
+    <string name="team_stoke_city_fc">Stoke City FC</string>
+
 
 </resources>

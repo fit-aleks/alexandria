@@ -3,6 +3,7 @@ package barqsoft.footballscores.widget;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.RemoteViewsService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import barqsoft.footballscores.MainActivity;
 import barqsoft.footballscores.R;
 import barqsoft.footballscores.Utilies;
 import barqsoft.footballscores.data.DatabaseContract;
@@ -93,9 +95,8 @@ public class TodayListWidgetRemoteViewsService extends RemoteViewsService {
                 final String matchTime = data.getString(COL_MATCHTIME);
                 final int homeGoals = data.getInt(COL_HOME_GOALS);
                 final int awayGoals = data.getInt(COL_AWAY_GOALS);
-                final double matchId = data.getDouble(COL_ID);
-                views.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(homeName));
-                views.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(awayName));
+                views.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(TodayListWidgetRemoteViewsService.this, homeName));
+                views.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(TodayListWidgetRemoteViewsService.this, awayName));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                     setRemoteContentDescription(views, R.id.home_crest, homeName);
                     setRemoteContentDescription(views, R.id.away_name, awayName);
@@ -104,6 +105,9 @@ public class TodayListWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.home_name, homeName);
                 views.setTextViewText(R.id.away_name, awayName);
                 views.setTextViewText(R.id.data_textview, matchTime);
+
+                final Intent openAppActivity = new Intent();
+                views.setOnClickFillInIntent(R.id.widget_list_item, openAppActivity);
 
                 return views;
             }

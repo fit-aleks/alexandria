@@ -63,9 +63,9 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
         holder.date.setText(mCursor.getString(COL_MATCHTIME));
         holder.score.setText(Utilies.getScores(mCursor.getInt(COL_HOME_GOALS), mCursor.getInt(COL_AWAY_GOALS)));
         holder.matchId = mCursor.getDouble(COL_ID);
-        holder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(homeName));
+        holder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(mContext, homeName));
         holder.home_crest.setContentDescription(homeName);
-        holder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(awayName));
+        holder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(mContext, awayName));
         holder.away_crest.setContentDescription(awayName);
 
         final LayoutInflater vi = (LayoutInflater) mContext.getApplicationContext()
